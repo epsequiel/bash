@@ -21,7 +21,7 @@ print "\n"
 #     print ${i}
 # done
 
-while getopts ":ab:c:F:" opt; do
+while getopts ":ab:c:F:h:H:u:U:" opt; do
     case $opt in
         a) 
             echo "[+] '-a' se encontro." >&2
@@ -39,8 +39,22 @@ while getopts ":ab:c:F:" opt; do
         F)
             echo "[+] -F se encontro, se espera una fecha"
             echo "[-] Argumento: $OPTARG"
-            _F=$(date "+%Y-%m-%d" --date=${OPTARG})
+            _F=$(date "+%Y-%m-%d" --date=${OPTARG})     # con esto parseo y formateo la fecha
             print "[*] La fecha parseada es $_F"
+            ;;
+        [h,H])
+            echo "[+] -H se encontro, se espera un horario"
+            echo "[-] Argumento: $OPTARG"
+            _SECS=$(( RANDOM%60 ))                                  # valor de segs random para que no quede 
+                                                                    # siempre en 00 segundos
+            _H=$(date "+%H:%M:%S" --date="${OPTARG} $_SECS secs")   # con esto parseo y formateo la fecha
+                                                                    # y le sumo SECS segundos random 
+            print "[*] La hora parseada es $_H"
+            ;;
+        [u,U])
+            echo "[*] u se encontro."
+            _U=${OPTARG}
+            print "[*] User: $_U"
             ;;
         \?)
             echo "Opcion invalida: -$OPTARG" >&2
