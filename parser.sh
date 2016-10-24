@@ -10,6 +10,21 @@
 # Creado: Ezequiel Meinero
 # ------------------------------------------------------------------------------
 
+
+#-------------------------------------------------------------------------------
+# Print ayuda
+function Uso {
+    print "Uso:"
+    print "\tparser [-F fecha] [-H horario] [-d Delta time] [-u user|code]\n"
+    print "\tdonde:"
+    print "\tFecha: es la fecha del marcaje en formato YYYYMMDD o YYYY-MM-DD"
+    print "\tHorario: es el horario del marcaje en formato HH:mm"
+    print "\tDelta Time: es el delta time desde el momento de ejecucion en segundos"
+    print "\tUser: usuario o codigo\n\n"
+}
+#-------------------------------------------------------------------------------
+
+
 print "\n"
 print "Ejercicio de parseo de argumentos con 'getopts'"
 printf "-----------------------------------------------\n"
@@ -21,10 +36,12 @@ print "\n"
 #     print ${i}
 # done
 
-while getopts ":ab:c:F:h:H:u:U:" opt; do
+while getopts ":ab:c:f:F:hH:u:U:" opt; do
     case $opt in
         a) 
             echo "[+] '-a' se encontro." >&2
+            Uso
+            exit 1
             ;;
         b)
             echo "[+] '-b' se encontro, se espera argumento"
@@ -36,13 +53,17 @@ while getopts ":ab:c:F:h:H:u:U:" opt; do
             echo "[-] Argumento: $OPTARG"
             _C=${OPTARG}
             ;;
-        F)
+        [f,F])
             echo "[+] -F se encontro, se espera una fecha"
             echo "[-] Argumento: $OPTARG"
             _F=$(date "+%Y-%m-%d" --date=${OPTARG})     # con esto parseo y formateo la fecha
             print "[*] La fecha parseada es $_F"
             ;;
-        [h,H])
+        h)
+            Uso
+            exit 1
+            ;;
+        H)
             echo "[+] -H se encontro, se espera un horario"
             echo "[-] Argumento: $OPTARG"
             _SECS=$(( RANDOM%60 ))                                  # valor de segs random para que no quede 
@@ -58,6 +79,8 @@ while getopts ":ab:c:F:h:H:u:U:" opt; do
             ;;
         \?)
             echo "Opcion invalida: -$OPTARG" >&2
+            Uso
+            #exit 1
             ;;
         :)
             echo "Opcion -$OPTARG requiere argumento." >&2
@@ -65,9 +88,12 @@ while getopts ":ab:c:F:h:H:u:U:" opt; do
             ;;
     esac
 done
-shift $((OPTIND-1))
-print "[*] Optind: $OPTIND"
 
-echo "b = ${_B}"
-echo "c = ${_C}"
+print "[*] Saliendo..."
+shift $((OPTIND-1))
+printf '<%s>\n' "$@"
+#print "[*] Optind: $OPTIND"
+#
+#echo "b = ${_B}"
+#echo "c = ${_C}"
 
